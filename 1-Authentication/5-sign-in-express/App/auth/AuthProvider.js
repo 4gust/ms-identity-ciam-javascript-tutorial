@@ -88,6 +88,7 @@ class AuthProvider {
             const tokenResponse = await msalInstance.acquireTokenByCode(authCodeRequest, req.body);
 
             req.session.tokenCache = msalInstance.getTokenCache().serialize();
+            req.session.accessToken = tokenResponse.accessToken;
             req.session.idToken = tokenResponse.idToken;
             req.session.account = tokenResponse.account;
             req.session.isAuthenticated = true;
@@ -173,7 +174,63 @@ class AuthProvider {
             console.log(error);
         }
     }
+
+    acquireToken(options = {}) {
+        return async (req, res, next) => {
+            try {
+                const msalInstance = this.getMsalInstance(this.config.msalConfig);
+
+                /**
+                 * If a token cache exists in the session, deserialize it and set it as the 
+                 * cache for the new MSAL CCA instance. For more, see: 
+                 * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/caching.md
+                 */
+                if (req.session.tokenCache) {
+                    console.log("-------- token cache added")
+                    msalInstance.getTokenCache().deserialize(req.session.tokenCache);
+                }
+                console.log(`${options.scopes} --- asdas1d`)
+
+                const tokenResponse = await msalInstance.acquireTokenSilent({
+                    account: req.session.account,
+                    scopes: options.scopes || [],
+                });
+
+                /**
+                 * On successful token acquisition, write the updated token 
+                 * cache back to the session. For more, see: 
+                 * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/caching.md
+                 */
+                console.log(`${options.scopes} --- asdas2d`)
+
+                req.session.tokenCache = msalInstance.getTokenCache().serialize();
+                req.session.accessToken = tokenResponse.accessToken;
+                req.session.idToken = tokenResponse.idToken;
+                req.session.account = tokenResponse.account;
+                console.log(`${options.scopes} --- asdas3d`)
+                res.redirect(options.successRedirect);
+            } catch (error) {
+                console.log(`${options.scopes} --- 1223423`)
+                if (error instanceof msal.InteractionRequiredAuthError) {
+                    console.log("awe are getitng error here");;
+                    console.log(error);
+                    // return this.login({
+                    //     scopes: options.scopes || [],
+                    //     redirectUri: options.redirectUri,
+                    //     successRedirect: options.successRedirect || '/',
+                    // })(req, res, next);
+                    
+                }
+
+                next(error);
+            }
+            console.log(`${options.scopes} --- 1223423`)
+        };
+    }
+
+
 }
+
 
 const authProvider = new AuthProvider({
     msalConfig: msalConfig,

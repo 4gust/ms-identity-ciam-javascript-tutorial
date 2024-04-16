@@ -11,3 +11,7 @@ exports.handleRedirect = async (req, res, next) => {
 exports.signOut = async (req, res, next) => {
     return authProvider.logout(req, res, next);
 };
+
+// exports.acquireToken = async (req, res, next) => {
+//     return authProvider.handleRedirect(req, res, next);
+// };

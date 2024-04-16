@@ -1,0 +1,59 @@
+<h1>Microsoft Graph API</h1>
+<h3>/me endpoint response</h3>
+<div>
+<form id="userInfoForm" action='/users/' method='POST'>
+  <table>
+    <tbody>
+        <tr style="display: block;">
+          <td><label for="displayName">Display Name : </label></td>
+          <td><input
+              type="text"
+              id="displayName"
+              name="displayName"
+              value="{{profile.displayName}}"
+            /></td>
+        </tr>
+        <tr style="display: block;">
+          <td><label for="userName">Given Name :</label></td>
+          <td><input
+              type="text"
+              id="givenName"
+              name="givenName"
+              value="{{profile.givenName}}"
+            /></td>
+        </tr>
+        <tr style="display: block;">
+          <td><label for="userSurname">Surname :</label></td>
+          <td><input
+              type="text"
+              id="surname"
+              name="surname"
+              value="{{profile.surname}}"
+            /></td>
+        </tr>
+        <tr style="display: block;">
+          <td><label for="userEmail">Email :</label></td>
+          <td><input
+              type="text"
+              id="mail"
+              name="mail"
+              value="{{profile.mail}}"
+              readonly
+            /></td>
+        </tr>
+        <tr style="display: block;">
+          <td><label for="officeLocation">office Location :</label></td>
+          <td><input
+              type="text"
+              id="officeLocation"
+              name="officeLocation"
+              value="{{profile.officeLocation}}"
+            /></td>
+        </tr>
+    </tbody>
+  </table>
+  <button onclick="">click me </button>
+  <button type="submit" id="button">Save</button>
+</form>
+</div>
+<a href="/">Go back</a>
